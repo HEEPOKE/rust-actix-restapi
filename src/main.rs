@@ -1,12 +1,12 @@
-mod pkg {
-    pub mod config;
-}
+use actix_web::{web, App, HttpServer};
 
-use pkg::config::{config::Config, config::CONFIG};
+mod config;
+
+use config::config::CONFIG;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    dotenv().ok();
+    let port: u16 = CONFIG.port.parse().expect("Failed to parse port number");
 
     HttpServer::new(|| {
         App::new()
@@ -14,7 +14,7 @@ async fn main() -> std::io::Result<()> {
             .service(echo)
             .route("/hey", web::get().to(manual_hello))
     })
-    .bind(("127.0.0.1", 8080))?
+    .bind(("127.0.0.1", port))?
     .run()
     .await
 }
