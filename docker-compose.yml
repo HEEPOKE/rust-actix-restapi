@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  postgres-db:
+    image: postgres:13
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: yoyo
+      POSTGRES_PASSWORD: 5555
+      POSTGRES_DB: rust-hexagonal
