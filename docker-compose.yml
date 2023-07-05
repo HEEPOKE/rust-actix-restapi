@@ -8,3 +8,8 @@ services:
       POSTGRES_USER: yoyo
       POSTGRES_PASSWORD: 5555
       POSTGRES_DB: rust-hexagonal
+    networks:
+      - HEEPOKE
+
+networks:
+  HEEPOKE:
