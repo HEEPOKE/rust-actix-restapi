@@ -1,5 +1,13 @@
+mod pkg {
+    pub mod config;
+}
+
+use pkg::config::{config::Config, config::CONFIG};
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    dotenv().ok();
+
     HttpServer::new(|| {
         App::new()
             .service(hello)
