@@ -11,7 +11,7 @@ table! {
         id -> Int4,
         username -> Varchar,
         email -> Varchar,
-        password -> Varchar,
+        password -> Nullable<Varchar>,
         tel -> Nullable<Varchar>,
         role -> UserRole,
         created_at -> Timestamp,
