@@ -1,9 +1,10 @@
+use crate::schema::shops;
 use chrono::NaiveDateTime;
 use diesel::prelude::*;
 
-use crate::schema::shops;
-
 #[derive(Debug, PartialEq, Queryable)]
+#[diesel(table_name = shops)]
+#[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Shop {
     pub id: i32,
     pub name: String,
@@ -12,4 +13,12 @@ pub struct Shop {
     pub user_id: i32,
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
+}
+
+#[derive(Debug, Insertable)]
+#[table_name = "shops"]
+pub struct NewShop<'a> {
+    pub name: &'a str,
+    pub address: &'a str,
+    pub telephone: Option<&'a str>,
 }
