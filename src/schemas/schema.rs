@@ -8,7 +8,7 @@ pub enum UserRole {
 
 table! {
     users (id) {
-        id -> Integer,
+        id -> Int4,
         username -> Varchar,
         email -> Varchar,
         password -> Varchar,
@@ -21,11 +21,11 @@ table! {
 
 table! {
     shops (id) {
-        id -> Integer,
+        id -> Int4,
         name -> Varchar,
         address -> Text,
         telephone -> Nullable<Varchar>,
-        user_id -> Integer,
+        user_id -> Int4,
         created_at -> Timestamp,
         updated_at -> Timestamp,
     }
