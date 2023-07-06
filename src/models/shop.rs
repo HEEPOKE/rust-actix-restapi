@@ -2,8 +2,9 @@ use crate::schema::shops;
 use chrono::NaiveDateTime;
 use diesel::prelude::*;
 
-#[derive(Debug, PartialEq, Queryable)]
+#[derive(Debug, PartialEq, Queryable, Selectable, Identifiable)]
 #[diesel(table_name = shops)]
+#[diesel(primary_key(id))]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Shop {
     pub id: i32,

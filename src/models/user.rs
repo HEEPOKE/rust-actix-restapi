@@ -7,8 +7,9 @@ pub enum UserRole {
     Admin,
     User,
 }
-#[derive(Debug, PartialEq, Queryable)]
+#[derive(Debug, PartialEq, Queryable, Selectable, Identifiable)]
 #[diesel(table_name = users)]
+#[diesel(primary_key(id))]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct User {
     pub id: i32,
