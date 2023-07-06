@@ -1,6 +1,7 @@
 use chrono::NaiveDateTime;
+use diesel::table;
 
-#[derive(Debug, PartialEq, DbEnum)]
+#[derive(Debug, PartialEq, Eq, , DbEnum)]
 pub enum UserRole {
     Admin,
     User,

@@ -1,15 +1,17 @@
-use crate::schema::users;
 use chrono::NaiveDateTime;
 use diesel::prelude::*;
 
-#[derive(Debug, PartialEq, DbEnum)]
+use crate::schema::users;
+
+#[derive(Debug, PartialEq, Eq, DbEnum)]
 pub enum UserRole {
     Admin,
     User,
 }
+
 #[derive(Debug, PartialEq, Queryable, Selectable, Identifiable)]
-#[diesel(table_name = users)]
-#[diesel(primary_key(id))]
+#[table_name = "users"]
+#[primary_key(id)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct User {
     pub id: i32,

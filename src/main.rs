@@ -2,6 +2,8 @@ use actix_web::{web, App, HttpServer};
 
 mod config;
 mod database;
+mod models;
+mod schemas;
 
 use config::config::CONFIG;
 use database::database::db_connection;
