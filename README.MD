@@ -15,3 +15,9 @@ docker compose up -d
 ```bash
 cp .env.example .env
 ```
+
+## How To Migrate
+
+```bash
+diesel migration run
+```
