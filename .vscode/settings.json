@@ -1,5 +1,5 @@
 {
-  "cSpell.words": ["actix", "dotenv", "dotenvy", "HEEPOKE"],
+  "cSpell.words": ["actix", "chrono", "dotenv", "dotenvy", "HEEPOKE"],
   "rust-analyzer.linkedProjects": [".\\Cargo.toml"],
   "rust-analyzer.showUnlinkedFileNotification": false
 }
