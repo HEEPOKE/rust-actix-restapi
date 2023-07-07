@@ -1,5 +1,6 @@
 mod config;
 mod database;
+mod routes;
 
 use actix_web::{web, App, HttpServer};
 
@@ -15,9 +16,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
             .app_data(web::Data::new(connection.clone()))
-            .service(hello)
-            .service(echo)
-            .route("/hey", web::get().to(manual_hello))
+            .service(routes::user_routes())
     })
     .bind((CONFIG.host, port))?
     .run()

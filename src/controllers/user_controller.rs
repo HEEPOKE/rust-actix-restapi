@@ -8,15 +8,6 @@ pub async fn get_all_users(user_service: web::Data<UserService>) -> impl Respond
         .map_err(|_| HttpResponse::InternalServerError().finish())
 }
 
-pub async fn create_user(
-    user_service: web::Data<UserService>,
-    new_user: web::Json<NewUser>,
-) -> impl Responder {
-    user_service.create_user(new_user.into_inner())
-        .map(|user| HttpResponse::Created().json(user))
-        .map_err(|_| HttpResponse::InternalServerError().finish())
-}
-
 pub async fn get_user_by_id(
     user_service: web::Data<UserService>,
     user_id: web::Path<i32>,
@@ -30,6 +21,16 @@ pub async fn get_user_by_id(
                 HttpResponse::NotFound().finish()
             }
         })
+        .map_err(|_| HttpResponse::InternalServerError().finish())
+}
+
+
+pub async fn create_user(
+    user_service: web::Data<UserService>,
+    new_user: web::Json<NewUser>,
+) -> impl Responder {
+    user_service.create_user(new_user.into_inner())
+        .map(|user| HttpResponse::Created().json(user))
         .map_err(|_| HttpResponse::InternalServerError().finish())
 }
 
