@@ -25,3 +25,9 @@ diesel migratio generate "table"
 ```bash
 diesel migration run
 ```
+
+## How To Run
+
+```bash
+cargo run
+```
