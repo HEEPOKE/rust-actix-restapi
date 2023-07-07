@@ -1,5 +1,3 @@
-mod models;
-mod schemas;
 mod config;
 mod database;
 
@@ -7,7 +5,6 @@ use actix_web::{web, App, HttpServer};
 
 use config::config::CONFIG;
 use database::database::db_connection;
-use self::models::{NewUser, User};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
