@@ -19,7 +19,7 @@ cp .env.example .env
 ## How To Migrate
 
 ```bash
-diesel migratio generate "table"
+diesel migration generate "table"
 ```
 
 ```bash

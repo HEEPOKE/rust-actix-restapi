@@ -16,7 +16,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
             .app_data(web::Data::new(connection.clone()))
-            .service(routes::user_routes())
+            .service(routes::user_route())
     })
     .bind((CONFIG.host, port))?
     .run()
