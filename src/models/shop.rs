@@ -1,4 +1,5 @@
-use crate::schema::shops;
+use crate::models::user::User;
+use crate::schema::schema::shops;
 use chrono::NaiveDateTime;
 use diesel::prelude::*;
 

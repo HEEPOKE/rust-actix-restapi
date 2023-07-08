@@ -1,6 +1,10 @@
 mod config;
+mod controllers;
 mod database;
+mod models;
 mod routes;
+mod schema;
+mod services;
 
 use actix_web::{web, App, HttpServer};
 
