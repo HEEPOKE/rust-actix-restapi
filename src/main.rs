@@ -6,7 +6,7 @@ mod routes;
 mod schema;
 mod services;
 
-use actix_web::{web, App, HttpServer};
+use actix_web::{web, web::scope, App, HttpServer};
 
 use config::config::CONFIG;
 use database::database::db_connection;
@@ -20,7 +20,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
             .app_data(web::Data::new(connection.clone()))
-            .service(routes::user_route::user_routes())
+            .service(scope("/api").service(routes::user_route::user_routes()))
     })
     .bind((CONFIG.host, port))?
     .run()
