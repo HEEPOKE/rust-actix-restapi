@@ -1,5 +1,6 @@
 use crate::models::user::User;
 use crate::schema::schema::shops;
+use chrono::NaiveDateTime;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 
@@ -16,6 +17,8 @@ pub struct Shop {
     pub address: String,
     pub telephone: Option<String>,
     pub user_id: i32,
+    pub created_at: NaiveDateTime,
+    pub updated_at: NaiveDateTime,
 }
 
 #[derive(Debug, Insertable, Serialize, Deserialize)]

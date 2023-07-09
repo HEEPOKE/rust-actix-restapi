@@ -20,7 +20,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
             .app_data(web::Data::new(connection.clone()))
-            .service(routes::user_route())
+            .service(routes::user_route::user_routes())
     })
     .bind((CONFIG.host, port))?
     .run()

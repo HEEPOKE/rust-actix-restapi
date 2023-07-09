@@ -1,4 +1,5 @@
 use crate::schema::schema::users;
+use chrono::NaiveDateTime;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 
@@ -12,6 +13,8 @@ pub struct User {
     pub email: String,
     pub password: Option<String>,
     pub tel: Option<String>,
+    pub created_at: NaiveDateTime,
+    pub updated_at: NaiveDateTime,
 }
 
 #[derive(Debug, PartialEq, Insertable, Serialize, Deserialize)]
