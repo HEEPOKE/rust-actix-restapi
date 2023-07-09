@@ -1,14 +1,13 @@
-use crate::models::{NewUser, User};
-use crate::schema::users;
+use crate::models::user::{NewUser, User};
+use crate::schema::schema::users;
 use diesel::prelude::*;
-use diesel::result::Error;
 
 pub struct UserService<'a> {
-    pub conn: &'a PgConnection,
+    pub conn: &'a mut diesel::PgConnection,
 }
 
 impl<'a> UserService<'a> {
-    pub fn new(conn: &'a PgConnection) -> Self {
+    pub fn new(conn: &'a mut diesel::PgConnection) -> Self {
         UserService { conn }
     }
 
@@ -32,11 +31,10 @@ impl<'a> UserService<'a> {
     pub fn update_user(
         &self,
         user_id: i32,
-        updated_user: NewUser,
+        updated_user: &NewUser,
     ) -> Result<User, diesel::result::Error> {
-        let target_user = users::table.find(user_id);
-        diesel::update(target_user)
-            .set(&updated_user)
+        diesel::update(users::table.find(user_id))
+            .set(updated_user)
             .get_result(self.conn)
     }
 
