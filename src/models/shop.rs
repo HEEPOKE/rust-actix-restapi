@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 )]
 #[diesel(table_name = shops)]
 #[diesel(primary_key(id))]
-#[belongs_to(User)]
+#[diesel(belongs_to(User))]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Shop {
     pub id: i32,
