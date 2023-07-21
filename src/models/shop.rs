@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
     Debug, PartialEq, Queryable, Selectable, Associations, Identifiable, Serialize, Deserialize,
 )]
 #[table_name = "shops"]
-#[primary_key(id)]
+#[diesel(primary_key(id))]
 #[belongs_to(User)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Shop {
