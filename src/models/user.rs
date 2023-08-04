@@ -33,3 +33,12 @@ pub struct CreateUserRequest {
     pub password: Option<String>,
     pub tel: Option<String>,
 }
+
+#[derive(AsChangeset)]
+#[table_name = "users"]
+pub struct UpdatedUser<'a> {
+    pub username: &'a str,
+    pub email: &'a str,
+    pub password: Option<&'a str>,
+    pub tel: Option<&'a str>,
+}

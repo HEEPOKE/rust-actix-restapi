@@ -1,6 +1,7 @@
-use crate::models::user::{NewUser, User};
+use crate::models::user::{NewUser, User, UpdatedUser};
 use crate::schema::schema::users;
 use diesel::prelude::*;
+use diesel::dsl::update;
 
 pub struct UserService<'a> {
     pub conn: &'a mut diesel::PgConnection,
@@ -31,11 +32,25 @@ impl<'a> UserService<'a> {
     pub fn update_user(
         &self,
         user_id: i32,
-        updated_user: &NewUser,
+        updated_user: &NewUser<'_>,
     ) -> Result<User, diesel::result::Error> {
-        diesel::update(users::table.find(user_id))
-            .set(updated_user)
-            .get_result(self.conn)
+        let updated_user_data = UpdatedUser {
+            username: updated_user.username,
+            email: updated_user.email,
+            password: updated_user.password,
+            tel: updated_user.tel,
+        };
+    
+        let updated_rows = update(users::table.find(user_id))
+            .set(&updated_user_data)
+            .execute(self.conn)?;
+    
+        if updated_rows > 0 {
+            let user = users::table.find(user_id).first(self.conn)?;
+            Ok(user)
+        } else {
+            Err(diesel::result::Error::NotFound)
+        }
     }
 
     pub fn delete_user(&self, user_id: i32) -> Result<(), diesel::result::Error> {

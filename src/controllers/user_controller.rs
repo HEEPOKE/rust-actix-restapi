@@ -1,36 +1,30 @@
-use crate::models::user::CreateUserRequest;
 use crate::models::user::NewUser;
+use crate::models::user::CreateUserRequest; 
 use crate::services::user_services::UserService;
-use actix_web::{web, HttpResponse, Result};
+use actix_web::{web, HttpResponse, Result, error::Error as ActixError};
 
-pub async fn get_all_users(user_service: web::Data<UserService<'_>>) -> Result<HttpResponse, HttpResponse> {
-    user_service
-        .get_all_users()
-        .map(|users| HttpResponse::Ok().json(users))
-        .map_err(|err| HttpResponse::InternalServerError().json(format!("Error: {:?}", err)))
+pub async fn get_all_users(user_service: web::Data<UserService<'_>>) -> Result<HttpResponse, ActixError> {
+    let users = user_service.get_all_users()?;
+    Ok(HttpResponse::Ok().json(users))
 }
 
 pub async fn get_user_by_id(
     user_service: web::Data<UserService<'_>>,
     user_id: web::Path<i32>,
-) -> Result<HttpResponse, HttpResponse> {
+) -> Result<HttpResponse, ActixError> {
     let user_id = user_id.into_inner();
-    user_service
-        .get_user_by_id(user_id)
-        .map(|user| {
-            if let Some(user) = user {
-                HttpResponse::Ok().json(user)
-            } else {
-                HttpResponse::NotFound().finish()
-            }
-        })
-        .map_err(|_| HttpResponse::InternalServerError().finish())
+    let user = user_service.get_user_by_id(user_id)?;
+    if let Some(user) = user {
+        Ok(HttpResponse::Ok().json(user))
+    } else {
+        Ok(HttpResponse::NotFound().finish())
+    }
 }
 
-pub async fn create_user<CreateUserRequest>(
+pub async fn create_user(
     user_service: web::Data<UserService<'_>>,
     new_user: web::Json<CreateUserRequest>,
-) -> Result<HttpResponse, HttpResponse> {
+) -> Result<HttpResponse, ActixError> {
     let new_user = NewUser {
         username: &new_user.username,
         email: &new_user.email,
@@ -38,17 +32,15 @@ pub async fn create_user<CreateUserRequest>(
         tel: new_user.tel.as_deref(),
     };
 
-    user_service
-        .create_user(new_user)
-        .map(|user| HttpResponse::Created().json(user))
-        .map_err(|_| HttpResponse::InternalServerError().finish())
+    let user = user_service.create_user(new_user)?;
+    Ok(HttpResponse::Created().json(user))
 }
 
-pub async fn update_user<UpdateUserRequest>(
+pub async fn update_user(
     user_service: web::Data<UserService<'_>>,
     user_id: web::Path<i32>,
-    updated_user: web::Json<UpdateUserRequest>,
-) -> Result<HttpResponse, HttpResponse> {
+    updated_user: web::Json<CreateUserRequest>,
+) -> Result<HttpResponse, ActixError> {
     let user_id = user_id.into_inner();
     let updated_user = NewUser {
         username: &updated_user.username,
@@ -56,19 +48,15 @@ pub async fn update_user<UpdateUserRequest>(
         password: updated_user.password.as_deref(),
         tel: updated_user.tel.as_deref(),
     };
-    user_service
-        .update_user(user_id, &updated_user)
-        .map(|user| HttpResponse::Ok().json(user))
-        .map_err(|_| HttpResponse::InternalServerError().finish())
+    let user = user_service.update_user(user_id, &updated_user)?;
+    Ok(HttpResponse::Ok().json(user))
 }
 
 pub async fn delete_user(
     user_service: web::Data<UserService<'_>>,
     user_id: web::Path<i32>,
-) -> Result<HttpResponse, HttpResponse> {
+) -> Result<HttpResponse, ActixError> {
     let user_id = user_id.into_inner();
-    user_service
-        .delete_user(user_id)
-        .map(|_| HttpResponse::NoContent().finish())
-        .map_err(|_| HttpResponse::InternalServerError().finish())
+    user_service.delete_user(user_id)?;
+    Ok(HttpResponse::NoContent().finish())
 }
