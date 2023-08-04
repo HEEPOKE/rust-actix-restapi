@@ -1,6 +1,7 @@
-use crate::models::user::{NewUser};
+use crate::models::user::CreateUserRequest;
+use crate::models::user::NewUser;
 use crate::services::user_services::UserService;
-use actix_web::{web, HttpResponse};
+use actix_web::{web, HttpResponse, Result};
 
 pub async fn get_all_users(user_service: web::Data<UserService<'_>>) -> Result<HttpResponse, HttpResponse> {
     user_service
@@ -36,6 +37,7 @@ pub async fn create_user<CreateUserRequest>(
         password: new_user.password.as_deref(),
         tel: new_user.tel.as_deref(),
     };
+
     user_service
         .create_user(new_user)
         .map(|user| HttpResponse::Created().json(user))

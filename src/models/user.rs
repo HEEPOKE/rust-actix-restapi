@@ -25,3 +25,11 @@ pub struct NewUser<'a> {
     pub password: Option<&'a str>,
     pub tel: Option<&'a str>,
 }
+
+#[derive(Debug, Deserialize)]
+pub struct CreateUserRequest {
+    pub username: String,
+    pub email: String,
+    pub password: Option<String>,
+    pub tel: Option<String>,
+}
