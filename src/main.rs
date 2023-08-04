@@ -6,7 +6,8 @@ mod routes;
 mod schema;
 mod services;
 
-use actix_web::{web, web::scope, App, HttpServer};
+use actix_web::{web, web::scope,middleware::Logger, App, HttpServer};
+use log::info;
 
 use config::config::CONFIG;
 use database::database::db_connection;
@@ -17,7 +18,13 @@ async fn main() -> std::io::Result<()> {
 
     let connection = db_connection(&CONFIG.database_url);
 
+    std::env::set_var("RUST_LOG", "info");
+    std::env::set_var("RUST_BACKTRACE", "1");
+    env_logger::init();
+
     HttpServer::new(|| {
+        let logger = Logger::default();
+        
         App::new()
             .app_data(web::Data::new(connection.clone()))
             .service(scope("/apis").service(routes::user_route::user_routes()))
