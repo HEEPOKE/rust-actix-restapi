@@ -4,9 +4,9 @@ use crate::services::user_services::UserService;
 use actix_web::{web, HttpResponse,Responder, Result, error::Error as ActixError};
 
 
-pub async fn get_all_users(user_service: web::Data<UserService<'_>>) -> Result<impl Responder,HttpResponse, actix_web::Error> {
+pub async fn get_all_users(user_service: web::Data<UserService<'_>>) -> Result<impl HttpResponse, actix_web::Error> {
     match user_service.get_all_users() {
-        Ok(users) => Ok(HttpResponse::Ok().web::Json(users)),
+        Ok(users) => Ok(HttpResponse::Ok().json(users)),
         Err(_) => Err(actix_web::Error::from(HttpResponse::InternalServerError().finish())),
     }
 }
