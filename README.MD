@@ -9,7 +9,7 @@ cp .env.example .env
 ## How Create DB
 
 ```bash
-docker create network HEEPOKE
+docker network create HEEPOKE
 ```
 
 ```bash
