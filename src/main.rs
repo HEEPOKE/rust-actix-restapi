@@ -6,7 +6,7 @@ mod routes;
 mod schema;
 mod services;
 
-use actix_web::{web, web::scope,middleware::Logger, App, HttpServer};
+use actix_web::{web, middleware::Logger, App, HttpServer};
 use log::info;
 
 use config::config::CONFIG;
@@ -27,7 +27,7 @@ async fn main() -> std::io::Result<()> {
         
         App::new()
             .app_data(web::Data::new(connection.clone()))
-            .service(scope("/apis").service(routes::user_route::user_routes()))
+            .service(web::scope("/apis").configure(routes::routes::config_routes))
     })
     .bind((CONFIG.host, port))?
     .run()
