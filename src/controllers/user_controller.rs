@@ -1,10 +1,11 @@
-use actix_web::error;
-use actix_web::{delete, get, post, put, web, Error, HttpResponse, Result};
-use std::sync::{Arc, RwLock};
 use crate::models::user::CreateUserRequest;
 use crate::models::user::NewUser;
 use crate::services::user_services::UserService;
 use crate::utils::response::CustomError;
+use actix_web::error;
+use actix_web::{delete, get, post, put, web, Error, HttpResponse, Result};
+use log::{error, info};
+use std::sync::{Arc, RwLock};
 
 #[get("/all")]
 pub async fn get_all_users(
@@ -17,7 +18,7 @@ pub async fn get_all_users(
     let users = user_service_lock
         .get_all_users()
         .map_err(|e| CustomError::DieselError(e))?;
-
+    info!("Retrieved all users");
     Ok(HttpResponse::Ok().json(users))
 }
 
@@ -29,10 +30,11 @@ pub async fn get_user_by_id(
     let user_id = user_id.into_inner();
     let mut user_service_lock = match user_service.write() {
         Ok(user_service_lock) => user_service_lock,
-        Err(_) => {
+        Err(err) => {
+            error!("find user with id error: {}", err);
             return Err(error::ErrorInternalServerError(
                 "Failed to acquire user service lock",
-            ))
+            ));
         }
     };
 
@@ -58,11 +60,17 @@ pub async fn create_user(
     match user_service.write() {
         Ok(mut user_service_lock) => match user_service_lock.create_user(new_user) {
             Ok(user) => Ok(HttpResponse::Created().json(user)),
-            Err(_) => Err(error::ErrorInternalServerError("Failed to create user")),
+            Err(err) => {
+                error!("create user error: {}", err);
+                Err(error::ErrorInternalServerError("Failed to create user"))
+            },
         },
-        Err(_) => Err(error::ErrorInternalServerError(
-            "Failed to acquire user service lock",
-        )),
+        Err(err) => {
+            error!("create user with error: {}", err);
+            Err(error::ErrorInternalServerError(
+                "Failed to acquire user service lock",
+            ))
+        }
     }
 }
 
@@ -81,13 +89,19 @@ pub async fn update_user(
     };
 
     match user_service.write() {
-        Ok(mut user_service_lock) => {
-            match user_service_lock.update_user(user_id, &updated_user) {
-                Ok(user) => Ok(HttpResponse::Ok().json(user)),
-                Err(_) => Err(error::ErrorInternalServerError("Failed to get user")),
+        Ok(mut user_service_lock) => match user_service_lock.update_user(user_id, &updated_user) {
+            Ok(user) => Ok(HttpResponse::Ok().json(user)),
+            Err(err) => {
+                error!("find user with id error: {}", err);
+                Err(error::ErrorInternalServerError("Failed to get user"))
             }
+        },
+        Err(err) => {
+            error!("update user with id error: {}", err);
+            Err(error::ErrorInternalServerError(
+                "Failed to acquire user service lock",
+            ))
         }
-        Err(_) => Err(error::ErrorInternalServerError("Failed to acquire user service lock")),
     }
 }
 
@@ -97,7 +111,9 @@ pub async fn delete_user(
     user_id: web::Path<i32>,
 ) -> Result<HttpResponse, Error> {
     let user_id = user_id.into_inner();
-    user_service.write().map_err(|_| error::ErrorInternalServerError("Failed to acquire user service lock"))?
+    user_service
+        .write()
+        .map_err(|_| error::ErrorInternalServerError("Failed to acquire user service lock"))?
         .delete_user(user_id)
         .map(|_| HttpResponse::NoContent().finish())
         .map_err(|_| error::ErrorInternalServerError("Failed to delete user"))
