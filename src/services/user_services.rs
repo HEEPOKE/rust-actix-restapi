@@ -8,10 +8,6 @@ pub struct UserService<'a> {
 }
 
 impl<'a> UserService<'a> {
-    pub fn new(conn: &'a mut diesel::PgConnection) -> Self {
-        UserService { conn }
-    }
-
    pub fn get_all_users(&mut self) -> Result<Vec<User>, diesel::result::Error> {
         users::table.load::<User>(self.conn)
     }
@@ -53,7 +49,7 @@ impl<'a> UserService<'a> {
         }
     }
 
-    pub fn delete_user(&self, user_id: i32) -> Result<(), diesel::result::Error> {
+    pub fn delete_user(&mut self, user_id: i32) -> Result<(), diesel::result::Error> {
         let target_user = users::table.find(user_id);
         diesel::delete(target_user).execute(self.conn)?;
         Ok(())

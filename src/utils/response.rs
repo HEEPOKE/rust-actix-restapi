@@ -1,28 +1,17 @@
 use actix_web::{error::ResponseError, HttpResponse};
 use diesel::result::Error as DieselError;
-use std::fmt;
+use derive_more::{Display, Error};
 
-#[derive(Debug)]
+#[derive(Debug, Display, Error)]
 pub enum CustomError {
+    #[display(fmt = "CustomError: {}", _0)]
     DieselError(DieselError),
-}
-
-impl fmt::Display for CustomError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            CustomError::DieselError(diesel_error) => {
-                write!(f, "CustomError: {}", diesel_error)
-            }
-        }
-    }
 }
 
 impl ResponseError for CustomError {
     fn error_response(&self) -> HttpResponse {
         match self {
-            CustomError::DieselError(_) => {
-                HttpResponse::InternalServerError().body("Internal Server Error")
-            }
+            CustomError::DieselError(_) => HttpResponse::InternalServerError().body("Internal Server Error"),
         }
     }
 }
