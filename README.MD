@@ -35,5 +35,9 @@ cargo run
 - watch run
 
 ```bash
+cargo install cargo-watch
+```
+
+```bash
 cargo watch -x run
 ```
