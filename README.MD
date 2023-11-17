@@ -31,3 +31,9 @@ diesel migration run
 ```bash
 cargo run
 ```
+
+- watch run
+
+```bash
+cargo watch -x run
+```

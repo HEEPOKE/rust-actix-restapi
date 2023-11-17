@@ -26,6 +26,7 @@ async fn main() -> std::io::Result<()> {
 
         App::new()
             .wrap(Logger::default())
+            .wrap(Logger::new("%a %{User-Agent}i"))
             .app_data(web::Data::new(connection.clone()))
             .service(web::scope("/apis").configure(routes::routes::config_routes))
     })
