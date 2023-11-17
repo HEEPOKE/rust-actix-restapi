@@ -12,25 +12,25 @@ impl<'a> UserService<'a> {
         UserService { conn }
     }
 
-    pub fn get_all_users(&self) -> Result<Vec<User>, diesel::result::Error> {
+   pub fn get_all_users(&mut self) -> Result<Vec<User>, diesel::result::Error> {
         users::table.load::<User>(self.conn)
     }
 
-    pub fn create_user(&self, new_user: NewUser) -> Result<User, diesel::result::Error> {
+    pub fn get_user_by_id(&mut self, user_id: i32) -> Result<Option<User>, diesel::result::Error> {
+        users::table
+        .find(user_id)
+        .first::<User>(self.conn)
+        .optional()
+    }
+
+    pub fn create_user(&mut self, new_user: NewUser) -> Result<User, diesel::result::Error> {
         diesel::insert_into(users::table)
             .values(&new_user)
             .get_result(self.conn)
     }
 
-    pub fn get_user_by_id(&self, user_id: i32) -> Result<Option<User>, diesel::result::Error> {
-        users::table
-            .find(user_id)
-            .first::<User>(self.conn)
-            .optional()
-    }
-
     pub fn update_user(
-        &self,
+        &mut self,
         user_id: i32,
         updated_user: &NewUser<'_>,
     ) -> Result<User, diesel::result::Error> {

@@ -5,6 +5,7 @@ mod models;
 mod routes;
 mod schema;
 mod services;
+mod utils;
 
 use actix_web::{middleware::Logger, web, App, HttpServer};
 use env_logger::Env;
@@ -22,7 +23,7 @@ async fn main() -> std::io::Result<()> {
     
     HttpServer::new(move || {
         let connection = db_connection(&database_url);
-        
+
         App::new()
             .wrap(Logger::default())
             .app_data(web::Data::new(connection.clone()))
