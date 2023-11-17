@@ -1,3 +1,4 @@
+
 use once_cell::sync::Lazy;
 use std::env;
 
@@ -23,5 +24,4 @@ impl Config {
     }
 }
 
-pub static CONFIG: Lazy<Config> =
-    Lazy::new(|| Config::new().expect("Failed to load configuration"));
+pub static CONFIG: Lazy<Config> = Lazy::new(|| Config::new().expect("Failed to load configuration"));

@@ -14,19 +14,21 @@ use database::database::db_connection;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let port: u16 = CONFIG.port.parse().expect("Failed to parse port number");
-
-    let connection = db_connection(&CONFIG.database_url);
-
+    let port: u16 = CONFIG.port.clone().parse().expect("Failed to parse port number");
+    let host = CONFIG.host.clone();
+    let database_url = CONFIG.database_url.clone();
+    
     env_logger::init_from_env(Env::default().default_filter_or("info"));
-
-    HttpServer::new(|| {
+    
+    HttpServer::new(move || {
+        let connection = db_connection(&database_url);
+        
         App::new()
             .wrap(Logger::default())
             .app_data(web::Data::new(connection.clone()))
             .service(web::scope("/apis").configure(routes::routes::config_routes))
     })
-    .bind((CONFIG.host, port))?
+    .bind((host, port))?
     .run()
     .await
 }
