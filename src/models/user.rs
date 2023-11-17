@@ -2,8 +2,9 @@ use crate::schema::schema::users;
 use chrono::NaiveDateTime;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
-#[derive(Debug, PartialEq, Eq, Queryable, Identifiable, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Eq, Queryable, Identifiable, Serialize, Deserialize, ToSchema)]
 #[diesel(table_name = users)]
 #[diesel(primary_key(id))]
 #[diesel(check_for_backend(diesel::pg::Pg))]

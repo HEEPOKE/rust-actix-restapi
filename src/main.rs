@@ -6,6 +6,7 @@ mod routes;
 mod schema;
 mod services;
 mod utils;
+mod docs;
 
 use actix_web::{middleware::Logger, web, App, HttpServer};
 use env_logger::Env;
@@ -20,6 +21,9 @@ async fn main() -> std::io::Result<()> {
     let database_url = CONFIG.database_url.clone();
     
     env_logger::init_from_env(Env::default().default_filter_or("info"));
+
+    let doc = api_doc::create_api_doc();
+    println!("{}", doc.to_pretty_json());
     
     HttpServer::new(move || {
         let connection = db_connection(&database_url);

@@ -5,8 +5,10 @@
     "dotenv",
     "dotenvy",
     "HEEPOKE",
-    "Insertable"
+    "Insertable",
+    "openapi",
+    "utoipa"
   ],
-  "rust-analyzer.linkedProjects": ["Cargo.toml"],
+  "rust-analyzer.linkedProjects": ["/Cargo.toml"],
   "rust-analyzer.showUnlinkedFileNotification": false
 }

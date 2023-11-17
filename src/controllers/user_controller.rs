@@ -8,6 +8,14 @@ use log::{error, info};
 use std::sync::{Arc, RwLock};
 
 #[get("/all")]
+#[utoipa::path(
+    get,
+    path = "/all",
+    responses(
+        (status = 200, description = "get users successfully", body = User),
+        (status = NOT_FOUND, description = "users was not found")
+    )
+)]
 pub async fn get_all_users(
     user_service: web::Data<Arc<RwLock<UserService<'_>>>>,
 ) -> Result<HttpResponse, Error> {
