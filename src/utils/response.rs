@@ -1,4 +1,4 @@
-use actix_web::{error::ResponseError, HttpResponse, http::StatusCode};
+use actix_web::{error::ResponseError, HttpResponse, http::{StatusCode, header::ContentType}};
 use diesel::result::Error as DieselError;
 use derive_more::{Display, Error};
 
@@ -16,6 +16,13 @@ pub enum ResError {
 
     #[display(fmt = "bad request")]
     BadClientData,
+}
+
+#[derive(Debug, Display, Error)]
+#[allow(dead_code)]
+enum ValidationErrorEnum {
+    #[display(fmt = "Validation error on field: {}", field)]
+    ValidationError { field: String },
 }
 
 impl ResponseError for CustomError {
@@ -44,6 +51,20 @@ impl ResponseError for ResError {
         match self {
             ResError::InternalError => StatusCode::INTERNAL_SERVER_ERROR,
             ResError::BadClientData => StatusCode::BAD_REQUEST,
+        }
+    }
+}
+
+impl ResponseError for ValidationErrorEnum {
+    fn error_response(&self) -> HttpResponse {
+        HttpResponse::build(self.status_code())
+            .insert_header(ContentType::html())
+            .body(self.to_string())
+    }
+
+    fn status_code(&self) -> StatusCode {
+        match *self {
+            ValidationErrorEnum::ValidationError { .. } => StatusCode::BAD_REQUEST,
         }
     }
 }
