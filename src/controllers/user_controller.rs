@@ -10,7 +10,8 @@ use std::sync::{Arc, RwLock};
 #[utoipa::path(
     tag = "users",
     get,
-    path = "/all",
+    context_path = "/apis",
+    path = "/users/all",
     responses(
         (status = 200, description = "get users successfully", body= [User]),
         (status = NOT_FOUND, description = "users was not found")
@@ -34,7 +35,8 @@ pub async fn get_all_users(
 #[utoipa::path(
     tag = "users",
     get,
-    path = "/find/{user_id}",
+    context_path = "/apis",
+    path = "/users/find/{user_id}",
     params(
         ("id", description = "user id"),
     ),
@@ -69,7 +71,8 @@ pub async fn get_user_by_id(
 #[utoipa::path(
     tag = "users",
     post,
-    path = "/create",
+    context_path = "/apis",
+    path = "/users/create",
     request_body = NewUser,
     responses(
         (status = 200, description = "create user success", body = User),
@@ -108,7 +111,8 @@ pub async fn create_user(
 #[utoipa::path(
     tag = "users",
     put,
-    path = "/update/{user_id}",
+    context_path = "/apis",
+    path = "/users/update/{user_id}",
     params(
         ("id", description = "user id"),
     ),
@@ -152,7 +156,8 @@ pub async fn update_user(
 #[utoipa::path(
     tag = "users",
     delete,
-    path = "/delete/{user_id}",
+    context_path = "/apis",
+    path = "/users/delete/{user_id}",
     params(
         ("id", description = "user id"),
     ),

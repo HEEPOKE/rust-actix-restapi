@@ -21,7 +21,7 @@ use database::database::db_connection;
 #[openapi(info(
     title = "My API",
     version = "1.0",
-    description = "My API Documentation"
+    description = "My API Documentation",
 ))]
 #[openapi(
     paths(
