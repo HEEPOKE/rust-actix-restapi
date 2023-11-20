@@ -8,12 +8,13 @@ use log::{error, info};
 use std::sync::{Arc, RwLock};
 
 #[utoipa::path(
+    tag = "users",
     get,
     path = "/all",
     responses(
         (status = 200, description = "get users successfully", body= [User]),
         (status = NOT_FOUND, description = "users was not found")
-    )
+    ),
 )]
 #[get("/all")]
 pub async fn get_all_users(
@@ -31,6 +32,7 @@ pub async fn get_all_users(
 }
 
 #[utoipa::path(
+    tag = "users",
     get,
     path = "/find/{user_id}",
     params(
@@ -65,6 +67,7 @@ pub async fn get_user_by_id(
 }
 
 #[utoipa::path(
+    tag = "users",
     post,
     path = "/create",
     request_body = NewUser,
@@ -103,6 +106,7 @@ pub async fn create_user(
 }
 
 #[utoipa::path(
+    tag = "users",
     put,
     path = "/update/{user_id}",
     params(
@@ -146,6 +150,7 @@ pub async fn update_user(
 }
 
 #[utoipa::path(
+    tag = "users",
     delete,
     path = "/delete/{user_id}",
     params(
