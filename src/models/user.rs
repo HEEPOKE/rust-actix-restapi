@@ -18,28 +18,40 @@ pub struct User {
     pub updated_at: NaiveDateTime,
 }
 
-#[derive(Debug, PartialEq, Insertable, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Insertable, Serialize, Deserialize, ToSchema)]
 #[diesel(table_name = users)]
 pub struct NewUser<'a> {
+    #[schema(example = "user")]
     pub username: &'a str,
+    #[schema(example = "user@ex.com")]
     pub email: &'a str,
+    #[schema(example = "111111")]
     pub password: Option<&'a str>,
+    #[schema(example = "0999999999")]
     pub tel: Option<&'a str>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, ToSchema)]
 pub struct CreateUserRequest {
+    #[schema(example = "user")]
     pub username: String,
+    #[schema(example = "user@ex.com")]
     pub email: String,
+    #[schema(example = "111111")]
     pub password: Option<String>,
+    #[schema(example = "0999999999")]
     pub tel: Option<String>,
 }
 
-#[derive(AsChangeset)]
+#[derive(AsChangeset, ToSchema)]
 #[diesel(table_name = users)]
 pub struct UpdatedUser<'a> {
+    #[schema(example = "user")]
     pub username: &'a str,
+    #[schema(example = "user@ex.com")]
     pub email: &'a str,
+    #[schema(example = "111111")]
     pub password: Option<&'a str>,
+    #[schema(example = "0999999999")]
     pub tel: Option<&'a str>,
 }

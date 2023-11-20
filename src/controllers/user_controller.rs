@@ -7,15 +7,15 @@ use actix_web::{delete, get, post, put, web, Error, HttpResponse, Result};
 use log::{error, info};
 use std::sync::{Arc, RwLock};
 
-#[get("/all")]
 #[utoipa::path(
     get,
     path = "/all",
     responses(
-        (status = 200, description = "get users successfully", body = User),
+        (status = 200, description = "get users successfully"),
         (status = NOT_FOUND, description = "users was not found")
     )
 )]
+#[get("/all")]
 pub async fn get_all_users(
     user_service: web::Data<Arc<RwLock<UserService<'_>>>>,
 ) -> Result<HttpResponse, Error> {
@@ -30,6 +30,17 @@ pub async fn get_all_users(
     Ok(HttpResponse::Ok().json(users))
 }
 
+#[utoipa::path(
+    get,
+    path = "/find/{user_id}",
+    params(
+        ("id", description = "user id"),
+    ),
+    responses(
+        (status = 200, description = "find user with id success"),
+        (status = NOT_FOUND, description = "cannot find user with id")
+    )
+)]
 #[get("/find/{user_id}")]
 pub async fn get_user_by_id(
     user_service: web::Data<Arc<RwLock<UserService<'_>>>>,
@@ -53,6 +64,15 @@ pub async fn get_user_by_id(
     }
 }
 
+#[utoipa::path(
+    post,
+    path = "/find/{user_id}",
+    request_body = NewUser,
+    responses(
+        (status = 200, description = "create user success"),
+        (status = NOT_FOUND, description = "cannot create user")
+    )
+)]
 #[post("/create")]
 pub async fn create_user(
     user_service: web::Data<Arc<RwLock<UserService<'_>>>>,
@@ -82,6 +102,18 @@ pub async fn create_user(
     }
 }
 
+#[utoipa::path(
+    put,
+    path = "/update/{user_id}",
+    params(
+        ("id", description = "user id"),
+    ),
+    request_body = UpdateUser,
+    responses(
+        (status = 200, description = "update user success"),
+        (status = NOT_FOUND, description = "cannot update user")
+    )
+)]
 #[put("/update/{user_id}")]
 pub async fn update_user(
     user_service: web::Data<Arc<RwLock<UserService<'_>>>>,
@@ -113,6 +145,17 @@ pub async fn update_user(
     }
 }
 
+#[utoipa::path(
+    delete,
+    path = "/delete/{user_id}",
+    params(
+        ("id", description = "user id"),
+    ),
+    responses(
+        (status = 200, description = "delete user success"),
+        (status = NOT_FOUND, description = "cannot delete user")
+    )
+)]
 #[delete("/delete/{user_id}")]
 pub async fn delete_user(
     user_service: web::Data<Arc<RwLock<UserService<'_>>>>,
