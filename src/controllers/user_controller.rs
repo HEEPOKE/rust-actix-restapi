@@ -11,7 +11,7 @@ use std::sync::{Arc, RwLock};
     get,
     path = "/all",
     responses(
-        (status = 200, description = "get users successfully"),
+        (status = 200, description = "get users successfully", body= [User]),
         (status = NOT_FOUND, description = "users was not found")
     )
 )]
@@ -37,7 +37,7 @@ pub async fn get_all_users(
         ("id", description = "user id"),
     ),
     responses(
-        (status = 200, description = "find user with id success"),
+        (status = 200, description = "find user with id success", body = User),
         (status = NOT_FOUND, description = "cannot find user with id")
     )
 )]
@@ -66,10 +66,10 @@ pub async fn get_user_by_id(
 
 #[utoipa::path(
     post,
-    path = "/find/{user_id}",
+    path = "/create",
     request_body = NewUser,
     responses(
-        (status = 200, description = "create user success"),
+        (status = 200, description = "create user success", body = User),
         (status = NOT_FOUND, description = "cannot create user")
     )
 )]
@@ -110,7 +110,7 @@ pub async fn create_user(
     ),
     request_body = UpdateUser,
     responses(
-        (status = 200, description = "update user success"),
+        (status = 200, description = "update user success", body = User),
         (status = NOT_FOUND, description = "cannot update user")
     )
 )]
