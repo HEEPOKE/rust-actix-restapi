@@ -58,7 +58,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(Logger::default())
             .wrap(Logger::new("%a %{User-Agent}i"))
-            .app_data(web::Data::new(connection.clone()))
+            .app_data(web::Data::new(connection))
             .service(SwaggerUi::new("/docs/{_:.*}").url("/api-docs/openapi.json", openapi.clone()))
             .service(web::scope("/apis").configure(routes::routes::config_routes))
     })

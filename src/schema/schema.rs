@@ -13,8 +13,6 @@ diesel::table! {
 }
 
 diesel::table! {
-    use diesel::sql_types::*;
-
     users (id) {
         id -> Int4,
         username -> Varchar,
@@ -26,6 +24,7 @@ diesel::table! {
     }
 }
 
-diesel::joinable!(shops -> users (user_id));
-
-diesel::allow_tables_to_appear_in_same_query!(shops, users,);
+diesel::allow_tables_to_appear_in_same_query!(
+    shops,
+    users,
+);

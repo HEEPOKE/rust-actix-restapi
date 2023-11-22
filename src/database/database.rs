@@ -1,11 +1,7 @@
 use diesel::pg::PgConnection;
-use diesel::r2d2::{ConnectionManager, Pool};
+use diesel::prelude::*;
 
-pub type DbPool = Pool<ConnectionManager<PgConnection>>;
-
-pub fn db_connection(database_url: &str) -> DbPool {
-    let manager = ConnectionManager::<PgConnection>::new(database_url);
-    Pool::builder()
-        .build(manager)
-        .expect("Failed to create database connection pool")
+pub fn db_connection(database_url: &str) -> PgConnection {
+    PgConnection::establish(database_url)
+        .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
 }
