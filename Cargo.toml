@@ -1,5 +1,5 @@
 [package]
-name = "rust-hexagonal-api"
+name = "rust-actix"
 version = "0.1.0"
 edition = "2021"
 
@@ -9,6 +9,7 @@ actix-rt = "2.9.0"
 diesel = { version = "2.1.4", features = ["postgres", "r2d2", "chrono"] }
 derive_more ={ version = "0.99.17", features = ["from", "add", "iterator"] }
 deadpool-diesel = "0.5.0"
+validator = { version = "0.16", features = ["derive"] }
 dotenvy = "0.15.7"
 once_cell = "1.18.0"
 chrono = { version = "0.4.31", features = ["serde"] }

@@ -3,9 +3,20 @@ use chrono::NaiveDateTime;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
+use validator::Validate;
 
 #[derive(
-    Debug, PartialEq, Eq, Queryable, Selectable, Identifiable, Serialize, Deserialize, ToSchema,
+    Debug,
+    PartialEq,
+    Eq,
+    Queryable,
+    Selectable,
+    Identifiable,
+    Serialize,
+    Deserialize,
+    ToSchema,
+    Validate,
+    Clone,
 )]
 #[diesel(table_name = users)]
 #[diesel(primary_key(id))]
@@ -16,6 +27,7 @@ pub struct User {
     #[schema(example = "user")]
     pub username: String,
     #[schema(example = "user@ex.com")]
+    #[validate(email)]
     pub email: String,
     pub password: Option<String>,
     #[schema(example = "0999999999")]
@@ -26,12 +38,14 @@ pub struct User {
     pub updated_at: NaiveDateTime,
 }
 
-#[derive(Debug, PartialEq, Insertable, Serialize, Deserialize, ToSchema)]
+#[derive(Debug, PartialEq, Insertable, Serialize, Deserialize, ToSchema, Validate)]
 #[diesel(table_name = users)]
 pub struct NewUser<'a> {
     #[schema(example = "user", required = true)]
+    #[validate(length(min = 1, max = 255))]
     pub username: &'a str,
     #[schema(example = "user@ex.com", required = true)]
+    #[validate(email)]
     pub email: &'a str,
     #[schema(example = "111111", required = false)]
     pub password: Option<&'a str>,
@@ -39,12 +53,14 @@ pub struct NewUser<'a> {
     pub tel: Option<&'a str>,
 }
 
-#[derive(Debug, Insertable, Serialize, Deserialize, ToSchema)]
+#[derive(Debug, Insertable, Serialize, Deserialize, ToSchema, Validate)]
 #[diesel(table_name = users)]
 pub struct CreateUserRequest {
     #[schema(example = "user")]
+    #[validate(length(min = 1, max = 255))]
     pub username: String,
     #[schema(example = "user@ex.com")]
+    #[validate(email)]
     pub email: String,
     #[schema(example = "111111")]
     pub password: Option<String>,
@@ -52,12 +68,14 @@ pub struct CreateUserRequest {
     pub tel: Option<String>,
 }
 
-#[derive(AsChangeset, ToSchema)]
+#[derive(AsChangeset, ToSchema, Validate)]
 #[diesel(table_name = users)]
 pub struct UpdatedUser<'a> {
     #[schema(example = "user")]
+    #[validate(length(min = 1, max = 255))]
     pub username: &'a str,
     #[schema(example = "user@ex.com")]
+    #[validate(email)]
     pub email: &'a str,
     #[schema(example = "111111")]
     pub password: Option<&'a str>,
