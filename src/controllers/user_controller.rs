@@ -37,9 +37,6 @@ pub async fn get_all_users(
     get,
     context_path = "/apis",
     path = "/users/find/{user_id}",
-    params(
-        ("id", description = "user id"),
-    ),
     responses(
         (status = 200, description = "find user with id success", body = User),
         (status = NOT_FOUND, description = "cannot find user with id")
@@ -113,9 +110,6 @@ pub async fn create_user(
     put,
     context_path = "/apis",
     path = "/users/update/{user_id}",
-    params(
-        ("id", description = "user id"),
-    ),
     request_body = UpdateUser,
     responses(
         (status = 200, description = "update user success", body = User),
@@ -158,9 +152,6 @@ pub async fn update_user(
     delete,
     context_path = "/apis",
     path = "/users/delete/{user_id}",
-    params(
-        ("id", description = "user id"),
-    ),
     responses(
         (status = 200, description = "delete user success"),
         (status = NOT_FOUND, description = "cannot delete user")
