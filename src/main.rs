@@ -8,7 +8,9 @@ mod services;
 mod utils;
 
 use actix_web::{middleware::Logger, web, App, HttpServer};
-use env_logger::Env;
+use services::user_services::UserService;
+use std::env;
+use std::sync::{Arc, RwLock};
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
@@ -48,17 +50,21 @@ async fn main() -> std::io::Result<()> {
     let host = CONFIG.host.clone();
     let database_url = CONFIG.database_url.clone();
 
-    env_logger::init_from_env(Env::default().default_filter_or("info"));
+    env::set_var("RUST_LOG", "debug");
+    env_logger::init();
 
     let openapi = ApisDoc::openapi();
 
     HttpServer::new(move || {
         let connection = db_connection(&database_url);
+        let connection = Arc::new(RwLock::new(connection));
+        let user_service = Arc::new(RwLock::new(UserService { conn: connection }));
 
         App::new()
             .wrap(Logger::default())
             .wrap(Logger::new("%a %{User-Agent}i"))
-            .app_data(web::Data::new(connection))
+            .app_data(web::Data::new(user_service))
+            .app_data(web::JsonConfig::default())
             .service(SwaggerUi::new("/docs/{_:.*}").url("/api-docs/openapi.json", openapi.clone()))
             .service(web::scope("/apis").configure(routes::routes::config_routes))
     })

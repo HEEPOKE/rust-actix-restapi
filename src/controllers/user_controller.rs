@@ -19,15 +19,12 @@ use std::sync::{Arc, RwLock};
 )]
 #[get("/all")]
 pub async fn get_all_users(
-    user_service: web::Data<Arc<RwLock<UserService<'_>>>>,
-) -> Result<HttpResponse, Error> {
-    let user_service_clone = user_service.clone();
-    let mut user_service_lock = user_service_clone
+    user_service: web::Data<Arc<RwLock<UserService>>>,
+) -> Result<HttpResponse, CustomError> {
+    let mut user_service_lock = user_service
         .write()
         .map_err(|_| CustomError::DieselError(diesel::result::Error::NotFound))?;
-    let users = user_service_lock
-        .get_all_users()
-        .map_err(|e| CustomError::DieselError(e))?;
+    let users = user_service_lock.get_all_users()?;
     info!("Retrieved all users");
     Ok(HttpResponse::Ok().json(users))
 }
@@ -44,7 +41,7 @@ pub async fn get_all_users(
 )]
 #[get("/find/{user_id}")]
 pub async fn get_user_by_id(
-    user_service: web::Data<Arc<RwLock<UserService<'_>>>>,
+    user_service:  web::Data<Arc<RwLock<UserService>>>,
     user_id: web::Path<i32>,
 ) -> Result<HttpResponse, Error> {
     let user_id = user_id.into_inner();
@@ -78,7 +75,7 @@ pub async fn get_user_by_id(
 )]
 #[post("/create")]
 pub async fn create_user(
-    user_service: web::Data<Arc<RwLock<UserService<'_>>>>,
+    user_service:  web::Data<Arc<RwLock<UserService>>>,
     new_user: web::Json<CreateUserRequest>,
 ) -> Result<HttpResponse, Error> {
     let new_user = NewUser {
@@ -89,7 +86,7 @@ pub async fn create_user(
     };
 
     match user_service.write() {
-        Ok(mut user_service_lock) => match user_service_lock.create_user(new_user) {
+        Ok(user_service_lock) => match user_service_lock.create_user(new_user) {
             Ok(user) => Ok(HttpResponse::Created().json(user)),
             Err(err) => {
                 error!("create user error: {}", err);
@@ -118,7 +115,7 @@ pub async fn create_user(
 )]
 #[put("/update/{user_id}")]
 pub async fn update_user(
-    user_service: web::Data<Arc<RwLock<UserService<'_>>>>,
+    user_service:  web::Data<Arc<RwLock<UserService>>>,
     user_id: web::Path<i32>,
     updated_user: web::Json<CreateUserRequest>,
 ) -> Result<HttpResponse, Error> {
@@ -131,7 +128,7 @@ pub async fn update_user(
     };
 
     match user_service.write() {
-        Ok(mut user_service_lock) => match user_service_lock.update_user(user_id, &updated_user) {
+        Ok(user_service_lock) => match user_service_lock.update_user(user_id, &updated_user) {
             Ok(user) => Ok(HttpResponse::Ok().json(user)),
             Err(err) => {
                 error!("find user with id error: {}", err);
@@ -159,7 +156,7 @@ pub async fn update_user(
 )]
 #[delete("/delete/{user_id}")]
 pub async fn delete_user(
-    user_service: web::Data<Arc<RwLock<UserService<'_>>>>,
+    user_service:  web::Data<Arc<RwLock<UserService>>>,
     user_id: web::Path<i32>,
 ) -> Result<HttpResponse, Error> {
     let user_id = user_id.into_inner();

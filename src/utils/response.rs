@@ -6,6 +6,12 @@ use derive_more::{Display, Error};
 pub enum CustomError {
     #[display(fmt = "CustomError: {}", _0)]
     DieselError(DieselError),
+
+    #[display(fmt = "internal error")]
+    InternalError,
+
+    #[display(fmt = "not found")]
+    NotFound,
 }
 
 #[derive(Debug, Display, Error)]
@@ -29,12 +35,15 @@ impl ResponseError for CustomError {
     fn error_response(&self) -> HttpResponse {
         match self {
             CustomError::DieselError(_) => HttpResponse::InternalServerError().body("Internal Server Error"),
+            CustomError::NotFound => HttpResponse::InternalServerError().body("not found"),
+            CustomError::InternalError => HttpResponse::InternalServerError().body("Internal Server Error"),
         }
     }
 
     fn status_code(&self) -> StatusCode {
         match self {
-            CustomError::DieselError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            CustomError::DieselError(_) | CustomError::InternalError => StatusCode::INTERNAL_SERVER_ERROR,
+            CustomError::DieselError(_) | CustomError::NotFound => StatusCode::BAD_REQUEST,
         }
     }
 }
