@@ -42,8 +42,8 @@ impl ResponseError for CustomError {
 
     fn status_code(&self) -> StatusCode {
         match self {
-            CustomError::DieselError(_) | CustomError::InternalError => StatusCode::INTERNAL_SERVER_ERROR,
             CustomError::DieselError(_) | CustomError::NotFound => StatusCode::BAD_REQUEST,
+            CustomError::InternalError => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 }
